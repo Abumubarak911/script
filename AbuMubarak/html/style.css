@@ -1,0 +1,397 @@
+body {
+    margin: 0;
+    overflow: hidden; /* لمنع ظهور أشرطة التمرير */
+    font-family: 'Inter', sans-serif; /* استخدام خط Inter */
+    background-color: rgba(0, 0, 0, 0.5); /* خلفية شفافة قليلاً عند فتح الـ UI */
+}
+
+#ipad-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90vw; /* استخدام وحدات نسبية */
+    max-width: 800px; /* تحديد أقصى عرض */
+    height: 90vh; /* استخدام وحدات نسبية */
+    max-height: 600px; /* تحديد أقصى ارتفاع */
+    background-color: #1a1a2e; /* لون داكن */
+    border-radius: 40px; /* حواف مستديرة */
+    box-shadow: 0 0 50px rgba(0, 255, 255, 0.5); /* ظل نيون أزرق */
+    border: 5px solid #00ffff; /* حدود نيون */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    color: #e0e0e0;
+    opacity: 0; /* للرسوم المتحركة */
+    transform: translate(-50%, -50%) scale(0.9); /* للرسوم المتحركة */
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out; /* للرسوم المتحركة */
+}
+
+#ipad-container.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.ipad-header {
+    background-color: #0f0f1a;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #00ffff;
+}
+
+.camera {
+    width: 20px;
+    height: 20px;
+    background-color: #00ffff;
+    border-radius: 50%;
+}
+
+.time {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #00ffff;
+}
+
+.island {
+    width: 60px;
+    height: 25px;
+    background-color: #00ffff;
+    border-radius: 15px;
+}
+
+.ipad-content {
+    flex-grow: 1;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.ipad-content h1 {
+    color: #00ffff;
+    margin-bottom: 20px;
+    font-size: 2.5em;
+}
+
+.ipad-content p {
+    margin-bottom: 30px;
+    font-size: 1.1em;
+}
+
+#media-url {
+    width: 80%;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border: 2px solid #00ffff;
+    background-color: #0f0f1a;
+    color: #e0e0e0;
+    font-size: 1em;
+}
+
+.controls button,
+.ipad-footer button {
+    background-color: #00ffff;
+    color: #1a1a2e;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.1s ease; /* إضافة انتقال للتحويل */
+    margin: 0 10px;
+}
+
+.controls button:hover,
+.ipad-footer button:hover {
+    background-color: #00e6e6;
+    transform: translateY(-2px); /* تأثير عند التحويم */
+}
+
+.controls button:active,
+.ipad-footer button:active {
+    transform: translateY(0); /* تأثير عند النقر */
+}
+
+.volume-control {
+    margin-top: 30px;
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.volume-control label {
+    margin-right: 15px;
+    font-size: 1.1em;
+    color: #00ffff;
+}
+
+#volume-slider {
+    width: 60%;
+    -webkit-appearance: none;
+    height: 10px;
+    border-radius: 5px;
+    background: #0f0f1a;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+}
+
+#volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #00ffff;
+    cursor: pointer;
+}
+
+#volume-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #00ffff;
+    cursor: pointer;
+}
+
+#mute-btn {
+    margin-left: 15px;
+}
+
+.ipad-footer {
+    background-color: #0f0f1a;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: center;
+    border-top: 2px solid #00ffff;
+}
+
+.status-message {
+    margin-top: 15px;
+    font-size: 0.9em;
+    color: #ff0000; /* لون أحمر للخطأ */
+    min-height: 20px; /* لضمان عدم اهتزاز الواجهة عند ظهور الرسالة */
+}
+
+.status-message.success {
+    color: #00ff00; /* لون أخضر للنجاح */
+}
+
+.status-message.loading {
+    color: #00ffff; /* لون أزرق سماوي للتحميل */
+}
+
+@media (max-width: 768px) {
+    #ipad-container {
+        width: 95vw;
+        height: 95vh;
+        border-radius: 20px;
+        border: 3px solid #00ffff;
+    }
+
+    .ipad-header {
+        padding: 10px 15px;
+    }
+
+    .camera {
+        width: 15px;
+        height: 15px;
+    }
+
+    .time {
+        font-size: 1em;
+    }
+
+    .island {
+        width: 40px;
+        height: 20px;
+    }
+
+    .ipad-content {
+        padding: 20px;
+    }
+
+    .ipad-content h1 {
+        font-size: 2em;
+    }
+
+    .ipad-content p {
+        font-size: 0.9em;
+    }
+
+    #media-url {
+        padding: 10px;
+        font-size: 0.9em;
+    }
+
+    .controls button,
+    .ipad-footer button {
+        padding: 10px 20px;
+        font-size: 1em;
+        margin: 0 5px;
+    }
+
+    .volume-control label {
+        font-size: 1em;
+    }
+
+    #volume-slider {
+        height: 8px;
+    }
+
+    #volume-slider::-webkit-slider-thumb,
+    #volume-slider::-moz-range-thumb {
+        width: 15px;
+        height: 15px;
+    }
+
+    .ipad-footer {
+        padding: 10px 15px;
+    }
+}
+
+
+
+
+.sound-range-control {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1em;
+    color: #e0e0e0;
+}
+
+.sound-range-control label {
+    margin-right: 10px;
+    color: #00ffff;
+}
+
+.sound-range-control input[type="radio"] {
+    margin-right: 5px;
+    accent-color: #00ffff; /* لون التحديد */
+}
+
+
+
+
+.saved-links-section {
+    margin-top: 30px;
+    width: 80%;
+    text-align: left;
+}
+
+.saved-links-section h2 {
+    color: #00ffff;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+#saved-links-list {
+    list-style: none;
+    padding: 0;
+    max-height: 150px; /* لتحديد ارتفاع القائمة وجعلها قابلة للتمرير */
+    overflow-y: auto;
+    border: 1px solid #00ffff;
+    border-radius: 10px;
+    background-color: #0f0f1a;
+    margin-bottom: 15px;
+}
+
+#saved-links-list li {
+    padding: 10px;
+    border-bottom: 1px solid #1a1a2e;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#saved-links-list li:last-child {
+    border-bottom: none;
+}
+
+#saved-links-list li span {
+    flex-grow: 1;
+    cursor: pointer;
+    color: #e0e0e0;
+    word-break: break-all; /* لكسر الكلمات الطويلة */
+}
+
+#saved-links-list li span:hover {
+    color: #00ffff;
+}
+
+#saved-links-list li button {
+    background-color: #ff0000; /* لون أحمر لزر الحذف */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.8em;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+}
+
+#saved-links-list li button:hover {
+    background-color: #cc0000;
+}
+
+#save-link-btn {
+    width: 100%;
+    padding: 12px 25px;
+    background-color: #00ffff;
+    color: #1a1a2e;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+#save-link-btn:hover {
+    background-color: #00e6e6;
+    transform: translateY(-2px);
+}
+
+#save-link-btn:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .saved-links-section {
+        width: 95%;
+    }
+
+    #saved-links-list {
+        max-height: 100px;
+    }
+
+    #saved-links-list li {
+        padding: 8px;
+    }
+
+    #saved-links-list li button {
+        padding: 4px 8px;
+        font-size: 0.7em;
+    }
+
+    #save-link-btn {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
+}
+
+

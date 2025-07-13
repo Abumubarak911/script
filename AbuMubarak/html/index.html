@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinema Control Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            overflow: hidden;
+        }
+
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: none;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-btn {
+            background: #e74c3c;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .content {
+            display: flex;
+            height: calc(100% - 80px);
+        }
+
+        .sidebar {
+            width: 300px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-right: 2px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .screen-list {
+            margin-bottom: 20px;
+        }
+
+        .screen-item {
+            background: rgba(255, 255, 255, 0.1);
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .screen-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .screen-item.active {
+            border-color: #3498db;
+            background: rgba(52, 152, 219, 0.2);
+        }
+
+        .screen-item.playing {
+            border-color: #27ae60;
+            background: rgba(39, 174, 96, 0.2);
+        }
+
+        .screen-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .screen-status {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .add-screen-btn {
+            width: 100%;
+            background: #27ae60;
+            border: none;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .add-screen-btn:hover {
+            background: #219a52;
+            transform: scale(1.02);
+        }
+
+        .control-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .control-section h3 {
+            margin-bottom: 15px;
+            color: #3498db;
+            font-size: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 14px;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #219a52;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .volume-slider {
+            flex: 1;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #3498db;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .coords-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .coords-input input {
+            flex: 1;
+        }
+
+        .video-preview {
+            width: 100%;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .no-screen-selected {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 18px;
+            margin-top: 50px;
+        }
+
+        .screen-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #2c3e50;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: #3498db;
+            font-size: 20px;
+        }
+
+        .animation-fade {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .animation-fade.show {
+            opacity: 1;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container">
+        <div class="header">
+            <h1>🎬 لوحة تحكم السينما</h1>
+            <button class="close-btn" onclick="closeUI()">✕ إغلاق</button>
+        </div>
+
+        <div class="content">
+            <div class="sidebar">
+                <div class="screen-list" id="screenList">
+                    <!-- الشاشات ستظهر هنا -->
+                </div>
+                <button class="add-screen-btn" onclick="showAddScreenModal()">➕ إضافة شاشة جديدة</button>
+            </div>
+
+            <div class="main-content">
+                <div class="no-screen-selected" id="noScreenSelected">
+                    اختر شاشة من القائمة الجانبية للبدء
+                </div>
+
+                <div class="screen-controls" id="screenControls" style="display: none;">
+                    <!-- معلومات الشاشة -->
+                    <div class="control-section">
+                        <h3>📺 معلومات الشاشة</h3>
+                        <div class="form-group">
+                            <label>اسم الشاشة:</label>
+                            <input type="text" id="screenName" placeholder="اسم الشاشة...">
+                        </div>
+                        <div class="form-group">
+                            <label>الإحداثيات (X, Y, Z):</label>
+                            <div class="coords-input">
+                                <input type="number" id="coordX" placeholder="X" step="0.1">
+                                <input type="number" id="coordY" placeholder="Y" step="0.1">
+                                <input type="number" id="coordZ" placeholder="Z" step="0.1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>الدوران (X, Y, Z):</label>
+                            <div class="coords-input">
+                                <input type="number" id="rotX" placeholder="X" step="0.1">
+                                <input type="number" id="rotY" placeholder="Y" step="0.1">
+                                <input type="number" id="rotZ" placeholder="Z" step="0.1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>الحجم (العرض, الارتفاع, العمق):</label>
+                            <div class="coords-input">
+                                <input type="number" id="scaleX" placeholder="العرض" step="0.1" min="0.1">
+                                <input type="number" id="scaleY" placeholder="الارتفاع" step="0.1" min="0.1">
+                                <input type="number" id="scaleZ" placeholder="العمق" step="0.1" min="0.1">
+                            </div>
+                        </div>
+                        <div class="screen-actions">
+                            <button class="btn btn-primary" onclick="updateScreen()">💾 حفظ التغييرات</button>
+                            <button class="btn btn-warning" onclick="teleportToScreen()">🚀 الانتقال للشاشة</button>
+                            <button class="btn btn-danger" onclick="deleteScreen()">🗑️ حذف الشاشة</button>
+                        </div>
+                    </div>
+
+                    <!-- تحكم الفيديو -->
+                    <div class="control-section">
+                        <h3>🎥 تحكم الفيديو</h3>
+                        <div class="video-preview" id="videoPreview">
+                            <div id="videoPlaceholder">لا يوجد فيديو قيد التشغيل</div>
+                        </div>
+                        <div class="form-group">
+                            <label>رابط الفيديو (YouTube, Twitch, etc.):</label>
+                            <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=...">
+                        </div>
+                        <div class="form-group">
+                            <label>مستوى الصوت:</label>
+                            <div class="volume-control">
+                                <span>🔇</span>
+                                <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.1" value="0.5">
+                                <span>🔊</span>
+                                <span id="volumeValue">50%</span>
+                            </div>
+                        </div>
+                        <div class="screen-actions">
+                            <button class="btn btn-success" onclick="playVideo()">▶️ تشغيل</button>
+                            <button class="btn btn-warning" onclick="pauseVideo()">⏸️ إيقاف مؤقت</button>
+                            <button class="btn btn-danger" onclick="stopVideo()">⏹️ إيقاف</button>
+                        </div>
+                    </div>
+
+                    <!-- إعدادات متقدمة -->
+                    <div class="control-section">
+                        <h3>⚙️ إعدادات متقدمة</h3>
+                        <div class="form-group">
+                            <label>نوع الشاشة:</label>
+                            <select id="screenType">
+                                <option value="normal">عادية</option>
+                                <option value="curved">منحنية</option>
+                                <option value="dome">قبة</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>جودة الفيديو:</label>
+                            <select id="videoQuality">
+                                <option value="auto">تلقائي</option>
+                                <option value="1080p">1080p</option>
+                                <option value="720p">720p</option>
+                                <option value="480p">480p</option>
+                            </select>
+                        </div>
+                        <div class="screen-actions">
+                            <button class="btn btn-primary" onclick="applyAdvancedSettings()">✅ تطبيق الإعدادات</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة شاشة جديدة -->
+    <div class="modal" id="addScreenModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>➕ إضافة شاشة جديدة</h3>
+            </div>
+            <div class="form-group">
+                <label>اسم الشاشة:</label>
+                <input type="text" id="newScreenName" placeholder="اسم الشاشة الجديدة...">
+            </div>
+            <div class="form-group">
+                <label>نوع الشاشة:</label>
+                <select id="newScreenType">
+                    <option value="normal">عادية</option>
+                    <option value="curved">منحنية</option>
+                    <option value="dome">قبة</option>
+                </select>
+            </div>
+            <div class="screen-actions">
+                <button class="btn btn-success" onclick="addScreen()">✅ إنشاء</button>
+                <button class="btn btn-danger" onclick="closeAddScreenModal()">❌ إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let screens = {};
+        let selectedScreen = null;
+        let config = {};
+
+        // استقبال الرسائل من NUI
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            
+            switch(data.type) {
+                case 'open':
+                    screens = data.screens;
+                    config = data.config;
+                    openUI();
+                    break;
+                case 'close':
+                    closeUI();
+                    break;
+                case 'updateScreens':
+                    screens = data.screens;
+                    updateScreenList();
+                    break;
+            }
+        });
+
+        // فتح الواجهة
+        function openUI() {
+            const container = document.getElementById('container');
+            container.style.display = 'block';
+            container.classList.add('animation-fade');
+            setTimeout(() => {
+                container.classList.add('show');
+            }, 10);
+            
+            updateScreenList();
+        }
+
+        // إغلاق الواجهة
+        function closeUI() {
+            const container = document.getElementById('container');
+            container.classList.remove('show');
+            setTimeout(() => {
+                container.style.display = 'none';
+                container.classList.remove('animation-fade');
+            }, 300);
+            
+            fetch(`https://${GetParentResourceName()}/close`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                },
+                body: JSON.stringify({})
+            });
+        }
+
+        // تحديث قائمة الشاشات
+        function updateScreenList() {
+            const screenList = document.getElementById('screenList');
+            screenList.innerHTML = '';
+            
+            for (const [id, screen] of Object.entries(screens)) {
+                const screenItem = document.createElement('div');
+                screenItem.className = `screen-item ${screen.active ? 'playing' : ''}`;
+                screenItem.onclick = () => selectScreen(id);
+                
+                screenItem.innerHTML = `
+                    <div class="screen-name">${screen.name}</div>
+                    <div class="screen-status">
+                        ${screen.active ? '🟢 يعمل' : '🔴 متوقف'} | 
+                        الصوت: ${Math.floor(screen.volume * 100)}%
+                    </div>
+                `;
+                
+                screenList.appendChild(screenItem);
+            }
+        }
+
+        // اختيار شاشة
+        function selectScreen(screenId) {
+            selectedScreen = screenId;
+            const screen = screens[screenId];
+            
+            // إزالة التحديد السابق
+            document.querySelectorAll('.screen-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // تحديد الشاشة الحالية
+            event.target.closest('.screen-item').classList.add('active');
+            
+            // إخفاء رسالة "لا يوجد شاشة محددة"
+            document.getElementById('noScreenSelected').style.display = 'none';
+            document.getElementById('screenControls').style.display = 'block';
+            
+            // تحديث النموذج
+            document.getElementById('screenName').value = screen.name;
+            document.getElementById('coordX').value = screen.coords.x;
+            document.getElementById('coordY').value = screen.coords.y;
+            document.getElementById('coordZ').value = screen.coords.z;
+            document.getElementById('rotX').value = screen.rotation.x;
+            document.getElementById('rotY').value = screen.rotation.y;
+            document.getElementById('rotZ').value = screen.rotation.z;
+            document.getElementById('scaleX').value = screen.scale.x;
+            document.getElementById('scaleY').value = screen.scale.y;
+            document.getElementById('scaleZ').value = screen.scale.z;
+            document.getElementById('videoUrl').value = screen.url || '';
+            document.getElementById('volumeSlider').value = screen.volume;
+            document.getElementById('volumeValue').textContent = Math.floor(screen.volume * 100) + '%';
+            
+            // تحديث معاينة الفيديو
+            updateVideoPreview();
+        }
+
+        // تحديث معاينة الفيديو
+        function updateVideoPreview() {
+            const preview = document.getElementById('videoPreview');
+            const placeholder = document.getElementById('videoPlaceholder');
+            const screen = screens[selectedScreen];
+            
+            if (screen.active && screen.url) {
+                placeholder.innerHTML = `
+                    <div style="text-align: center;">
+                        <div style="font-size: 16px; margin-bottom: 10px;">🎬 يعمل الآن</div>
+                        <div style="font-size: 12px; opacity: 0.7;">${screen.url}</div>
+                    </div>
+                `;
+                preview.style.background = 'rgba(39, 174, 96, 0.2)';
+            } else {
+                placeholder.innerHTML = 'لا يوجد فيديو قيد التشغيل';
+                preview.style.background = 'rgba(0, 0, 0, 0.5)';
+            }
+        }
+
+        // تحديث الشاشة
+        function updateScreen() {
+            if (!selectedScreen) return;
+            
+            const screenData = {
+                id: parseInt(selectedScreen),
+                name: document.getElementById('screenName').value,
+                coords: {
+                    x: parseFloat(document.getElementById('coordX').value),
+                    y: parseFloat(document.getElementById('coordY').value),
+                    z: parseFloat(document.getElementById('coordZ').value)
+                },
+                rotation: {
+                    x: parseFloat(document.getElementById('rotX').value),
+                    y: parseFloat(document.getElementById('rotY').value),
+                    z: parseFloat(document.getElementById('rotZ').value)
+                },
+                scale: {
+                    x: parseFloat(document.getElementById('scaleX').value),
+                    y: parseFloat(document.getElementById('scaleY').value),
+                    z: parseFloat(document.getElementById('scaleZ').value)
+                },
+                url: screens[selectedScreen].url,
+                volume: screens[selectedScreen].volume,
+                active: screens[selectedScreen].active
+            };
+            
+            fetch(`https://${GetParentResourceName()}/updateScreen`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                },
+                body: JSON.stringify(screenData)
+            });
+        }
+
+        // تشغيل الفيديو
+        function playVideo() {
+            if (!selectedScreen) return;
+            
+            const url = document.getElementById('videoUrl').value;
+            if (!url) {
+                alert('يرجى إدخال رابط الفيديو');
+                return;
+            }
+            
+            fetch(`https://${GetParentResourceName()}/playVideo`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                },
+                body: JSON.stringify({
+                    id: parseInt(selectedScreen),
+                    url: url
+                })
+            });
+        }
+
+        // إيقاف الفيديو
+        function stopVideo() {
+            if (!selectedScreen) return;
+            
+            fetch(`https://${GetParentResourceName()}/stopVideo`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                },
+                body: JSON.stringify({
+                    id: parseInt(selectedScreen)
+                })
+            });
+        }
+
+        // إيقاف مؤقت (نفس الإيقاف حالياً)
+        function pauseVideo() {
+            stopVideo();
+        }
+
+        // تغيير الصوت
+        document.getElementById('volumeSlider').addEventListener('input', function() {
+            const volume = parseFloat(this.value);
+            document.getElementById('volumeValue').textContent = Math.floor(volume * 100) + '%';
+            
+            if (selectedScreen) {
+                fetch(`https://${GetParentResourceName()}/setVolume`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+                    },
+                    body: JSON.stringify({
+                        id: parseInt(selectedScreen),
+                        volume: volume
+                    })
+                });
+            }
+        });
+
+        // الانتقال للشاشة
+        function teleportToScreen() {
+            if (!selectedScreen) return;
+            
+            fetch(`https://${GetParentResourceName()}/teleportToScreen`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                },
+                body: JSON.stringify({
+                    id: parseInt(selectedScreen)
+                })
+            });
+        }
+
+        // حذف الشاشة
+        function deleteScreen() {
+            if (!selectedScreen) return;
+            
+            if (confirm('هل أنت متأكد من حذف هذه الشاشة؟')) {
+                fetch(`https://${GetParentResourceName()}/deleteScreen`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+                    },
+                    body: JSON.stringify({
+                        id: parseInt(selectedScreen)
+                    })
+                });
+                
+                selectedScreen = null;
+                document.getElementById('noScreenSelected').style.display = 'block';
+                document.getElementById('screenControls').style.display = 'none';
+            }
+        }
+
+        // إظهار نافذة إضافة شاشة
+        function showAddScreenModal() {
+            document.getElementById('addScreenModal').style.display = 'block';
+        }
+
+        // إغلاق نافذة إضافة شاشة
+        function closeAddScreenModal() {
+            document.getElementById('addScreenModal').style.display = 'none';
+        }
+
+        // إضافة شاشة جديدة
+        function addScreen() {
+            const name = document.getElementById('newScreenName').value;
+            if (!name) {
+                alert('يرجى إدخال اسم الشاشة');
+                return;
+            }
+            
+            fetch(`https://${GetParentResourceName()}/addScreen`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                },
+                body: JSON.stringify({
+                    name: name,
+                    type: document.getElementById('newScreenType').value
+                })
+            });
+            
+            closeAddScreenModal();
+        }
+
+        // تطبيق الإعدادات المتقدمة
+        function applyAdvancedSettings() {
+            if (!selectedScreen) return;
+            
+            // يمكن إضافة المزيد من الإعدادات المتقدمة هنا
+            alert('تم تطبيق الإعدادات المتقدمة');
+        }
+
+        // إغلاق النوافذ بالضغط على ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeUI();
+            }
+        });
+
+        // دالة للحصول على اسم المورد
+        function GetParentResourceName() {
+            return 'cinema_script'; // اسم المورد الخاص بك
+        }
+    </script>
+</body>
+</html>
